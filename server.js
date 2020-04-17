@@ -1,6 +1,7 @@
 const path = require('path');
 const http = require('http');
 const express = require('express');
+const formatMessage = require('./utils/messages')
 
 const socketio = require('socket.io');
 
@@ -11,23 +12,25 @@ const io = socketio(server);
 
 app.use(express.static(path.join(__dirname, 'public')))
 
+const botName = 'ChatCord Bot'
+
 //run when client connects
 
 io.on("connection", socket =>{
    
 //welcome current user.
-   socket.emit('message', 'welcome to chatcord');
+   socket.emit('message', formatMessage(botName,'welcome to chatcord'));//this replaces (username, text ) from messages.js
 
    //broadcast when user connects
-   socket.broadcast.emit('message', 'User has joined the chat');
+   socket.broadcast.emit('message', formatMessage(botName, 'User has joined the chat'));
    //when client disconnects
    socket.on('disconnect',()=>{
-      io.emit('message', 'A user has left the chat');
+      io.emit('message', formatMessage(botName,'A user has left the chat'));
    })
 
    //listen for chat message
    socket.on('chatMessage', msg=>{
-      io.emit('message', msg);//io emits to everything
+      io.emit('message', formatMessage('USER',msg));//io emits to everything
    })
 })
 
