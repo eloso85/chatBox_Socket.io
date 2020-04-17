@@ -18,6 +18,11 @@ chatForm.addEventListener('submit', (e)=>{
     const msg = e.target.elements.msg.value //this grabs the msg Id from chat.html and usese value
 
     socket.emit('chatMessage',msg) //chatMessage is the payload saved from const msg
+
+    e.target.elements.msg.value='';//clears input after message input
+    e.target.elements.msg.focus();//foucs on empy input
+
+
 })
 
 function outputMessage(message){
