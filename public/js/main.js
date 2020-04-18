@@ -1,7 +1,17 @@
 const chatForm = document.getElementById('chat-form')
 const chatMessages =document.querySelector('.chat-messages')
 
-const socket = io();
+const {username, room} = Qs.parse(location.search,{
+    ignoreQueryPrefix:true
+})// Added Qs cdn to chathtml in under script. 
+
+console.log(username, room)
+
+const socket = io('joinRoom', {username, room});
+
+//Join chat room
+socket.emit()
+
 //message from server
 socket.on('message', message=>{
     console.log(message)
