@@ -2,7 +2,7 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const formatMessage = require('./utils/messages')
-const {userJoin, getCurrentUser} = require('./utils/users')
+const {userJoin, getCurrentUser, userLeave,getRoomUser} = require('./utils/users')
 
 
 const socketio = require('socket.io');
@@ -28,7 +28,19 @@ io.on("connection", socket =>{
    socket.emit('message', formatMessage(botName,'welcome to chatcord'));//this replaces (username, text ) from messages.js
 
    //broadcast when user connects
-   socket.broadcast.to(user.room).emit('message', formatMessage(botName, `${user.username} has joined the chat`));
+   socket.broadcast
+   .to(user.room)
+   .emit(
+      'message',
+       formatMessage(botName, `${user.username} has joined the chat`)
+       );
+       //set user and room info 
+       io
+       .to(user.room)
+       .emit('roomUsers',{
+          room: user.room,
+          users: getRoomUser(user.room)
+       })
    })
 
   
@@ -41,7 +53,20 @@ io.on("connection", socket =>{
    })
     //when client disconnects
     socket.on('disconnect',()=>{
-      io.emit('message', formatMessage(botName,'A user has left the chat'));
+       const user = userLeave(socket.id)
+
+     if(user){
+      io.to(user.room).emit('message', formatMessage(botName,`${user.username} has left the chat`));
+
+      io
+       .to(user.room)
+       .emit('roomUsers',{
+          room: user.room,
+          users: getRoomUser(user.room)
+       })
+     }
+     
+
    })
 })
 
