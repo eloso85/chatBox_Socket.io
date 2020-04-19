@@ -7,10 +7,10 @@ const {username, room} = Qs.parse(location.search,{
 
 console.log(username, room)
 
-const socket = io('joinRoom', {username, room});
+const socket = io();
 
 //Join chat room
-socket.emit()
+socket.emit('joinRoom',{username, room})
 
 //message from server
 socket.on('message', message=>{
