@@ -32,7 +32,7 @@ io.on("connection", socket =>{
    })
 
   
-
+//hello
    //listen for chat message
    socket.on('chatMessage', msg=>{
       const user = getCurrentUser(socket.id)
